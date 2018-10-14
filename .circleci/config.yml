@@ -28,5 +28,6 @@ jobs:
           command: |
             bundle exec rake db:create
             bundle exec rake db:schema:load
-
+      
+      - run: bundle exec rails_best_practices
       - run: bundle exec rspec
