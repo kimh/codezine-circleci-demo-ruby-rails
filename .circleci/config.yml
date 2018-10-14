@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  install_dependency:
     working_directory: ~/circleci-demo-ruby-rails
     docker:
       - image: circleci/ruby:2.4.1-node
@@ -9,7 +9,6 @@ jobs:
       - image: circleci/postgres:9.4.12-alpine
     steps:
       - checkout
-
       # Restore bundle cache
       - type: cache-restore
         key: rails-demo-{{ checksum "Gemfile.lock" }}
@@ -23,6 +22,19 @@ jobs:
         paths:
           - vendor/bundle
 
+  run_test:
+    working_directory: ~/circleci-demo-ruby-rails
+    docker:
+      - image: circleci/ruby:2.4.1-node
+        environment:
+          RAILS_ENV: test
+      - image: circleci/postgres:9.4.12-alpine
+    steps:
+      - checkout
+      # Restore bundle cache
+      - type: cache-restore
+        key: rails-demo-{{ checksum "Gemfile.lock" }}
+
       # Database setup
       - run:
           command: |
@@ -31,3 +43,10 @@ jobs:
       
       - run: bundle exec rails_best_practices
       - run: bundle exec rspec
+
+workflows:
+  version: 2
+  workflow:
+    jobs:
+      - install_dependency
+      - run_test
