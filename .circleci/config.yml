@@ -1,7 +1,6 @@
 version: 2
 jobs:
   build:
-    parallelism: 3
     working_directory: ~/circleci-demo-ruby-rails
     docker:
       - image: circleci/ruby:2.4.1-node
@@ -25,10 +24,9 @@ jobs:
           - vendor/bundle
 
       # Database setup
-      - run: bundle exec rake db:create
-      - run: bundle exec rake db:schema:load
-
-      # Run rspec in parallel
-      - type: shell
+      - run:
         command: |
-          bundle exec rspec 
+          bundle exec rake db:create
+          bundle exec rake db:schema:load
+
+      - run: bundle exec rspec
