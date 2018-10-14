@@ -35,6 +35,8 @@ jobs:
       - type: cache-restore
         key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
 
+      - run: bundle install --path vendor/bundle
+
       # Database setup
       - run:
           command: |
