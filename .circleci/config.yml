@@ -49,4 +49,6 @@ workflows:
   workflow:
     jobs:
       - install_dependency
-      - run_test
+      - run_test:
+          requires:
+            - install_dependency
