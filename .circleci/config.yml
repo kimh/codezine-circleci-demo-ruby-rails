@@ -11,14 +11,14 @@ jobs:
       - checkout
       # Restore bundle cache
       - type: cache-restore
-        key: rails-demo-{{ checksum "Gemfile.lock" }}
+        key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
 
       # Bundle install dependencies
       - run: bundle install --path vendor/bundle
 
       # Store bundle cache
       - type: cache-save
-        key: rails-demo-{{ checksum "Gemfile.lock" }}
+        key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
         paths:
           - vendor/bundle
 
@@ -33,7 +33,7 @@ jobs:
       - checkout
       # Restore bundle cache
       - type: cache-restore
-        key: rails-demo-{{ checksum "Gemfile.lock" }}
+        key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
 
       # Database setup
       - run:
