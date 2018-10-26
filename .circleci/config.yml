@@ -23,7 +23,7 @@ jobs:
             - run: echo "cond 1"
 
       - when:
-          condition: false
+          condition: no
           steps:
             - run: echo "cond 2"
 
