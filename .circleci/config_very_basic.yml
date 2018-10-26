@@ -1,13 +1,4 @@
-version: 2.1
-commands:
-  run-rails-test:
-    description: "Railsのテストを実行"
-    steps:
-      - run:
-          command: |
-            bundle exec rake db:create
-            bundle exec rake db:schema:load
-      - run: bundle exec rspec
+version: 2
 jobs:
   build:
     working_directory: ~/circleci-demo-ruby-rails
@@ -17,16 +8,6 @@ jobs:
           RAILS_ENV: test
       - image: circleci/postgres:9.4.12-alpine
     steps:
-      - when:
-          condition: "kim"
-          steps:
-            - run: echo "cond 1"
-
-      - when:
-          condition: no
-          steps:
-            - run: echo "cond 2"
-
       - checkout
 
       - restore_cache:
@@ -41,4 +22,9 @@ jobs:
           paths:
             - vendor/bundle
 
-      - run-rails-test
+      - run:
+          command: |
+            bundle exec rake db:create
+            bundle exec rake db:schema:load
+
+      - run: bundle exec rspec
