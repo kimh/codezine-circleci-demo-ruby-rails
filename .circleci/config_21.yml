@@ -18,7 +18,7 @@ jobs:
       - image: circleci/postgres:9.4.12-alpine
     steps:
       - when:
-          condition: kim
+          condition: false
           steps:
             - run: echo \"my custom checkout\"
 
