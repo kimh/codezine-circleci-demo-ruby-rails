@@ -1,8 +1,80 @@
-version: 2.0
+version: 2
 jobs:
-  build:
+  install_dependency:
+    working_directory: ~/circleci-demo-ruby-rails
     docker:
-      - image: circleci/node:4.8.2
+      - image: circleci/ruby:2.4.1-node
+        environment:
+          RAILS_ENV: test
+      - image: circleci/postgres:9.4.12-alpine
     steps:
       - checkout
-      - run: echo "Hello World!"
+      # Restore bundle cache
+      - type: cache-restore
+        key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
+
+      # Bundle install dependencies
+      - run: bundle install --path vendor/bundle
+
+      # Store bundle cache
+      - type: cache-save
+        key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
+        paths:
+          - vendor/bundle
+
+  run_test:
+    working_directory: ~/circleci-demo-ruby-rails
+    docker:
+      - image: circleci/ruby:2.4.1-node
+        environment:
+          RAILS_ENV: test
+      - image: circleci/postgres:9.4.12-alpine
+    steps:
+      - checkout
+      # Restore bundle cache
+      - type: cache-restore
+        key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
+
+      - run: bundle install --path vendor/bundle
+
+      # Database setup
+      - run:
+          command: |
+            bundle exec rake db:create
+            bundle exec rake db:schema:load
+      
+      - run: bundle exec rspec
+
+  run_lint:
+    working_directory: ~/circleci-demo-ruby-rails
+    docker:
+      - image: circleci/ruby:2.4.1-node
+        environment:
+          RAILS_ENV: test
+      - image: circleci/postgres:9.4.12-alpine
+    steps:
+      - checkout
+      # Restore bundle cache
+      - type: cache-restore
+        key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
+
+      - run: bundle install --path vendor/bundle
+
+      # Database setup
+      - run:
+          command: |
+            bundle exec rake db:create
+            bundle exec rake db:schema:load
+      
+      - run: bundle exec rails_best_practices
+
+workflows:
+  workflow:
+    jobs:
+      - install_dependency
+      - run_test:
+          requires:
+            - install_dependency
+      - run_lint:
+          requires:
+            - install_dependency
