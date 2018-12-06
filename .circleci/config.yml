@@ -69,7 +69,7 @@ jobs:
       - run: bundle exec rails_best_practices
 
 workflows:
-  version: 2
+  version: 2.1
   workflow:
     jobs:
       - install_dependency
