@@ -69,8 +69,8 @@ jobs:
       - run: bundle exec rails_best_practices
 
 workflows:
-  version: 2.1
-  workflow:
+  version: 2
+  test-and-lint:
     jobs:
       - install_dependency
       - run_test:
