@@ -102,7 +102,13 @@ jobs:
       - attach_workspace:
           at: public
 
-      - run: ls -la public/assets
+      - run: |
+          if [ -d public/assets ]; then
+            echo "Assets exist!"
+          else
+            echo "No assets found. Something went wrong!"
+            exit 1
+          fi
 
 workflows:
   version: 2
