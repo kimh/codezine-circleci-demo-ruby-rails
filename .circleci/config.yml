@@ -1,5 +1,4 @@
-version: 2.1
-
+version: 2
 jobs:
   install_dependency:
     working_directory: ~/circleci-demo-ruby-rails
@@ -34,7 +33,7 @@ jobs:
       - checkout
       # Restore bundle cache
       - restore_cache:
-        key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
+          key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
 
       - run: bundle install --path vendor/bundle
 
@@ -57,7 +56,7 @@ jobs:
       - checkout
       # Restore bundle cache
       - restore_cache:
-        key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
+          key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
 
       - run: bundle install --path vendor/bundle
 
@@ -69,45 +68,9 @@ jobs:
       
       - run: bundle exec rails_best_practices
 
-  precompile:
-    working_directory: ~/circleci-demo-ruby-rails
-    docker:
-      - image: circleci/ruby:2.4.1-node
-        environment:
-          RAILS_ENV: test
-      - image: circleci/postgres:9.4.12-alpine
-    steps:
-      - checkout
-      # Restore bundle cache
-      - restore_cache:
-        key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
-
-      - run: bundle install --path vendor/bundle
-
-      # Precompile Asset
-      - run: bundle exec rake assets:precompile RAILS_ENV=production 
-      
-      - persist_to_workspace:
-          root: public/
-          paths:
-            - assets
-
-  deploy:
-    working_directory: ~/circleci-demo-ruby-rails
-    docker:
-      - image: circleci/ruby:2.4.1-node
-        environment:
-          RAILS_ENV: test
-      - image: circleci/postgres:9.4.12-alpine
-    steps:
-      - attach_workspace:
-          at: public
-
-      - run: ls -la public/assets
-
 workflows:
   version: 2
-  test-and-lint:
+  workflow:
     jobs:
       - install_dependency
       - run_test:
@@ -116,11 +79,3 @@ workflows:
       - run_lint:
           requires:
             - install_dependency
-      - precompile:
-          requires:
-            - install_dependency
-      - deploy:
-          requires:
-            - run_test
-            - run_lint
-            - precompile

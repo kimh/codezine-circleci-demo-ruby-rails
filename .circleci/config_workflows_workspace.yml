@@ -1,4 +1,5 @@
-version: 2
+version: 2.1
+
 jobs:
   install_dependency:
     working_directory: ~/circleci-demo-ruby-rails
@@ -10,17 +11,17 @@ jobs:
     steps:
       - checkout
       # Restore bundle cache
-      - type: cache-restore
-        key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
+      - restore_cache:
+          key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
 
       # Bundle install dependencies
       - run: bundle install --path vendor/bundle
 
       # Store bundle cache
-      - type: cache-save
-        key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
-        paths:
-          - vendor/bundle
+      - save_cache:
+          key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
 
   run_test:
     working_directory: ~/circleci-demo-ruby-rails
@@ -32,7 +33,7 @@ jobs:
     steps:
       - checkout
       # Restore bundle cache
-      - type: cache-restore
+      - restore_cache:
         key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
 
       - run: bundle install --path vendor/bundle
@@ -55,7 +56,7 @@ jobs:
     steps:
       - checkout
       # Restore bundle cache
-      - type: cache-restore
+      - restore_cache:
         key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
 
       - run: bundle install --path vendor/bundle
@@ -78,7 +79,7 @@ jobs:
     steps:
       - checkout
       # Restore bundle cache
-      - type: cache-restore
+      - restore_cache:
         key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
 
       - run: bundle install --path vendor/bundle
