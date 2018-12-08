@@ -6,7 +6,6 @@ jobs:
       - image: circleci/ruby:2.4.1-node
         environment:
           RAILS_ENV: test
-      - image: circleci/postgres:9.4.12-alpine
     steps:
       - checkout
       # Restore bundle cache
@@ -51,7 +50,6 @@ jobs:
       - image: circleci/ruby:2.4.1-node
         environment:
           RAILS_ENV: test
-      - image: circleci/postgres:9.4.12-alpine
     steps:
       - checkout
       # Restore bundle cache
@@ -60,12 +58,6 @@ jobs:
 
       - run: bundle install --path vendor/bundle
 
-      # Database setup
-      - run:
-          command: |
-            bundle exec rake db:create
-            bundle exec rake db:schema:load
-      
       - run: bundle exec rails_best_practices
 
 workflows:
