@@ -34,7 +34,7 @@ jobs:
       - checkout
       # Restore bundle cache
       - restore_cache:
-        key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
+          key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
 
       - run: bundle install --path vendor/bundle
 
@@ -57,7 +57,7 @@ jobs:
       - checkout
       # Restore bundle cache
       - restore_cache:
-        key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
+          key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
 
       - run: bundle install --path vendor/bundle
 
@@ -80,7 +80,7 @@ jobs:
       - checkout
       # Restore bundle cache
       - restore_cache:
-        key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
+          key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
 
       - run: bundle install --path vendor/bundle
 
