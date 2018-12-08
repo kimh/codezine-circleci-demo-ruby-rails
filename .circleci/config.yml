@@ -58,12 +58,12 @@ jobs:
 
       - run: bundle install --path vendor/bundle
 
-      # Database setup
-      - run:
-          command: |
-            bundle exec rake db:create
-            bundle exec rake db:schema:load
-      
+      ## Database setup
+      #- run:
+      #    command: |
+      #      bundle exec rake db:create
+      #      bundle exec rake db:schema:load
+      #
       - run: bundle exec rails_best_practices
 
 workflows:
