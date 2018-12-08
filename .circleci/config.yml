@@ -119,7 +119,6 @@ workflows:
           requires:
             - install_dependency
       - deploy:
-          type: approval
           requires:
             - run_test
             - run_lint
