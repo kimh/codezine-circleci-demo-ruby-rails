@@ -1,6 +1,4 @@
 version: 2.1
-orbs:
-  ruby-orbs: sue445/ruby-orbs@1.3.0
 
 jobs:
   install_dependency:
@@ -12,8 +10,18 @@ jobs:
       - image: circleci/postgres:9.4.12-alpine
     steps:
       - checkout
-      - ruby-orbs/bundle-install:
-          cache_key_prefix: v1-rails-demo
+      # Restore bundle cache
+      - restore_cache:
+          key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
+
+      # Bundle install dependencies
+      - run: bundle install --path vendor/bundle
+
+      # Store bundle cache
+      - save_cache:
+          key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
 
   run_test:
     working_directory: ~/circleci-demo-ruby-rails
@@ -24,8 +32,11 @@ jobs:
       - image: circleci/postgres:9.4.12-alpine
     steps:
       - checkout
-      - ruby-orbs/bundle-install:
-          cache_key_prefix: v1-rails-demo
+      # Restore bundle cache
+      - restore_cache:
+        key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
+
+      - run: bundle install --path vendor/bundle
 
       # Database setup
       - run:
@@ -44,8 +55,12 @@ jobs:
       - image: circleci/postgres:9.4.12-alpine
     steps:
       - checkout
-      - ruby-orbs/bundle-install:
-          cache_key_prefix: v1-rails-demo
+      # Restore bundle cache
+      - restore_cache:
+        key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
+
+      - run: bundle install --path vendor/bundle
+
       # Database setup
       - run:
           command: |
@@ -64,8 +79,10 @@ jobs:
     steps:
       - checkout
       # Restore bundle cache
-      - ruby-orbs/bundle-install:
-          cache_key_prefix: v1-rails-demo
+      - restore_cache:
+        key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
+
+      - run: bundle install --path vendor/bundle
 
       # Precompile Asset
       - run: bundle exec rake assets:precompile RAILS_ENV=production 
