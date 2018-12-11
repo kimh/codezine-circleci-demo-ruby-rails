@@ -50,11 +50,8 @@ jobs:
     executor: ruby-executor
     steps:
       - checkout
-      # Restore bundle cache
       - ruby-orbs/bundle-install:
           cache_key_prefix: v1-rails-demo
-
-      # Precompile Asset
       - run: bundle exec rake assets:precompile RAILS_ENV=production
 
       - persist_to_workspace:
