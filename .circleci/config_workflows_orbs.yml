@@ -9,6 +9,7 @@ executors:
       - image: circleci/ruby:2.4.1-node
         environment:
           RAILS_ENV: test
+      - image: circleci/postgres:9.4.12-alpine
 
 jobs:
   install_dependency:
@@ -19,23 +20,15 @@ jobs:
           cache_key_prefix: v1-rails-demo
 
   run_test:
-    working_directory: ~/circleci-demo-ruby-rails
-    docker:
-      - image: circleci/ruby:2.4.1-node
-        environment:
-          RAILS_ENV: test
-      - image: circleci/postgres:9.4.12-alpine
+    executor: ruby-executor
     steps:
       - checkout
       - ruby-orbs/bundle-install:
           cache_key_prefix: v1-rails-demo
-
-      # Database setup
       - run:
           command: |
             bundle exec rake db:create
             bundle exec rake db:schema:load
-
       - run: bundle exec rspec
 
   run_lint:
@@ -53,7 +46,6 @@ jobs:
       - ruby-orbs/bundle-install:
           cache_key_prefix: v1-rails-demo
       - run: bundle exec rake assets:precompile RAILS_ENV=production
-
       - persist_to_workspace:
           root: public/
           paths:
@@ -64,7 +56,6 @@ jobs:
     steps:
       - attach_workspace:
           at: public
-
       - run: ls -la public/assets
 
 workflows:
