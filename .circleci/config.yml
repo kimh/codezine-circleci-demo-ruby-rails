@@ -8,7 +8,7 @@ executors:
       - image: circleci/ruby:2.4.1-node
         environment:
           RAILS_ENV: test
-
+      - image: circleci/postgres:9.4.12-alpine
 jobs:
   install_dependency:
     working_directory: ~/circleci-demo-ruby-rails
@@ -20,11 +20,7 @@ jobs:
 
   run_test:
     working_directory: ~/circleci-demo-ruby-rails
-    docker:
-      - image: circleci/ruby:2.4.1-node
-        environment:
-          RAILS_ENV: test
-      - image: circleci/postgres:9.4.12-alpine
+    executor: ruby-executor
     steps:
       - checkout
       - ruby-orbs/bundle-install:
