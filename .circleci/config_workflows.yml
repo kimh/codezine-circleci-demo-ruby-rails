@@ -8,14 +8,9 @@ jobs:
           RAILS_ENV: test
     steps:
       - checkout
-      # Restore bundle cache
       - restore_cache:
           key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
-
-      # Bundle install dependencies
       - run: bundle install --path vendor/bundle
-
-      # Store bundle cache
       - save_cache:
           key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
           paths:
@@ -30,18 +25,13 @@ jobs:
       - image: circleci/postgres:9.4.12-alpine
     steps:
       - checkout
-      # Restore bundle cache
       - restore_cache:
           key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
-
       - run: bundle install --path vendor/bundle
-
-      # Database setup
       - run:
           command: |
             bundle exec rake db:create
             bundle exec rake db:schema:load
-      
       - run: bundle exec rspec
 
   run_lint:
@@ -52,12 +42,9 @@ jobs:
           RAILS_ENV: test
     steps:
       - checkout
-      # Restore bundle cache
       - restore_cache:
           key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
-
       - run: bundle install --path vendor/bundle
-
       - run: bundle exec rails_best_practices
 
 workflows:
