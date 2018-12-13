@@ -22,6 +22,7 @@ jobs:
     working_directory: ~/circleci-demo-ruby-rails
     executor: ruby-executor
     steps:
+      - run: exit 1
       - checkout
       - ruby-orbs/bundle-install:
           cache_key_prefix: v1-rails-demo
