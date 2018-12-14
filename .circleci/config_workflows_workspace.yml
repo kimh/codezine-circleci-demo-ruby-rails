@@ -1,4 +1,5 @@
-version: 2
+version: 2.1
+
 jobs:
   install_dependency:
     working_directory: ~/circleci-demo-ruby-rails
@@ -32,6 +33,7 @@ jobs:
           command: |
             bundle exec rake db:create
             bundle exec rake db:schema:load
+      
       - run: bundle exec rspec
 
   run_lint:
@@ -46,10 +48,37 @@ jobs:
           key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
       - run: bundle install --path vendor/bundle
       - run: bundle exec rails_best_practices
+  precompile:
+    working_directory: ~/circleci-demo-ruby-rails
+    docker:
+      - image: circleci/ruby:2.4.1-node
+        environment:
+          RAILS_ENV: test
+    steps:
+      - checkout
+      - restore_cache:
+          key: v1-rails-demo-{{ checksum "Gemfile.lock" }}
+      - run: bundle install --path vendor/bundle
+      - run: bundle exec rake assets:precompile RAILS_ENV=production 
+      - persist_to_workspace:
+          root: public/
+          paths:
+            - assets
+
+  deploy:
+    working_directory: ~/circleci-demo-ruby-rails
+    docker:
+      - image: circleci/ruby:2.4.1-node
+        environment:
+          RAILS_ENV: test
+    steps:
+      - attach_workspace:
+          at: public
+      - run: ls -la public/assets
 
 workflows:
   version: 2
-  workflow:
+  test-and-lint:
     jobs:
       - install_dependency
       - run_test:
@@ -58,3 +87,11 @@ workflows:
       - run_lint:
           requires:
             - install_dependency
+      - precompile:
+          requires:
+            - install_dependency
+      - deploy:
+          requires:
+            - run_test
+            - run_lint
+            - precompile
